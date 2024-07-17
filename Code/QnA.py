@@ -168,26 +168,3 @@ if __name__ == "__main__":
     watsonx_granite = initialize_watsonx_llm()
     print("setup granite")
     app.run(host='0.0.0.0', port=5000, debug=False,use_reloader=False)
-    # Main loop to continuously accept questions
-    # while True:
-    #     user_input = input("Ask a question (type 'exit' to quit): ")
-    #     if user_input.lower() == 'exit':
-    #         break
-    #     answer_question(user_input, context_history, watsonx_granite, collection)
-
-    # # Dictionary to collect pages under each document ID
-    # document_sources = {}
-    # # Collect pages under each document ID
-    # for source in all_sources:
-    #     page_number = source.split(",")[0].strip()  # Extract page number
-    #     document_id = source.split(",")[1].strip()  # Extract document ID
-    #     if document_id in document_sources:
-    #         document_sources[document_id].append(page_number)
-    #     else:
-    #         document_sources[document_id] = [page_number]
-    # # Print grouped sources
-    # print("\nAll References from the Conversation:")
-    # for document_id, pages in document_sources.items():
-    #     # Combine pages into a single line for each document ID
-    #     pages_str = ", ".join(pages)
-    #     print(f"- Pages {pages_str}, {document_id}")
