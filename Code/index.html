@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Answering System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #343a40; /* Dark gray background */
+            color: #f8f9fa; /* Light text color */
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0; /* Remove default body margin */
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            flex-grow: 1;
+            display: flex;
+        }
+        .left-section {
+            flex-basis: 25%;
+            padding-right: 20px;
+            overflow-y: auto;
+        }
+        .right-section {
+            flex-basis: 75%;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            position: relative; /* Relative positioning for absolute child */
+        }
+        .card {
+            margin-top: 20px;
+            background-color: #495057; /* Slightly lighter gray for cards */
+            border: none;
+        }
+        .form-control, .btn-primary {
+            background-color: #495057; /* Match the card background */
+            color: #f8f9fa; /* Light text color */
+            border: 1px solid #6c757d; /* Slightly darker border */
+        }
+        .form-label {
+        color: white;
+        }
+        .responses {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-bottom: 10px; /* Add some padding at the bottom for spacing */
+        }
+        .response {
+            background-color: #6c757d; /* Even lighter gray for response section */
+            padding: 10px;
+            border-radius: 5px;
+            color: #f8f9fa; /* Light text color */
+            margin-bottom: 10px;
+        }
+        .question-form-container {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            padding: 0 20px;
+        }
+        .question-form {
+            margin-top: 10px; /* Add margin to separate from the responses */
+        }
+        .scrollable-responses {
+            overflow-y: auto;
+            max-height: calc(100vh - 250px); /* Adjust height to fit content without scrolling whole page */
+            border: 1px solid #6c757d;
+            border-radius: 5px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-section">
+            <h1>RBI Q&A</h1>
+            <p>Explore RBI Q&A, leveraging AI to deliver precise answers from RBI documents.</p>
+            
+            <h2>Key Features:</h2>
+            <ul>
+                <li><strong>Document Querying:</strong> Access detailed insights and policies.</li>
+                <li><strong>Embedding Storage:</strong> Uses all-MiniLM-L6-v2 embeddings in Milvus for efficient retrieval.</li>
+                <li><strong>Advanced Q&A:</strong> Employs MIXTRAL_8X7B_INSTRUCT_V01 and RAG for context-aware responses.</li>
+                <li><strong>Prompt Engineering:</strong> Generates concise answers using contextual templates.</li>
+            </ul>
+            
+            <p>Get accurate answers with transparent source references.</p>
+        </div>             
+        <div class="right-section">
+            <div class="scrollable-responses" id="response-container">
+                <!-- Responses will be appended here -->
+            </div>
+            <div class="question-form-container">
+                <div class="card question-form">
+                    <div class="card-body">
+                        <form id="question-form">
+                            <div class="mb-3">
+                                <label for="question" class="form-label">Ask a Question</label>
+                                <input type="text" class="form-control" id="question" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('question-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const question = document.getElementById('question').value;
+            console.log(`Question submitted: ${question}`);
+            
+            fetch('http://127.0.0.1:5000/ask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ question })
+            })
+            .then(response => {
+                console.log('Response received:', response);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Data received:', data);
+                let responseText = data.response.replace(/^(Answer|AI|human): /i, '');
+                const responseDiv = document.getElementById('response-container');
+                const newResponse = document.createElement('div');
+                newResponse.classList.add('card');
+                newResponse.classList.add('response');
+                newResponse.innerHTML = `
+                    <div class="card-body">
+                        <p><strong>Question:</strong> ${question}</p>
+                        <p><strong>Answer:</strong> ${responseText}</p>
+                        <p><strong>Sources:</strong> <ul>${data.sources.map(source => `<li>Page ${source}</li>`).join('')}</ul></p>
+                        <hr>
+                    </div>
+                `;
+                responseDiv.insertBefore(newResponse, responseDiv.firstChild); // Insert new response at the top
+                document.getElementById('question').value = ''; // Clear the input field
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const responseDiv = document.getElementById('response-container');
+                const errorResponse = document.createElement('div');
+                errorResponse.classList.add('card');
+                errorResponse.classList.add('response');
+                errorResponse.innerHTML = `
+                    <div class="card-body">
+                        <p>Error occurred while fetching the response. Please try again later.</p>
+                    </div>
+                `;
+                responseDiv.insertBefore(errorResponse, responseDiv.firstChild); // Insert error response at the top
+            });
+        });
+    </script>
+</body>
+</html>
