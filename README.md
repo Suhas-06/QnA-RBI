@@ -34,8 +34,8 @@ Before running the project, ensure you have the following:
 
 ### Run the Flask Application:
 - To start the application, run:
-      ```bash
-      python QnA.py
-      ```
+```bash
+python QnA.py
+```
 ### Access the Application:
 - Open a web browser and navigate to http://127.0.0.1:5000 to use the application locally or open the `index.html` on any browser after you run the flask app
