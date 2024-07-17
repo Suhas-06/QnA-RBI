@@ -91,5 +91,5 @@ def process_pdfs_in_directory(directory_path):
 
 # Main function
 if __name__ == "__main__":
-    directory_path = "C:\\Users\\SuhasGowda\\Desktop\\Code\\RBI Bulletin Docs for  Q&A"
+    directory_path = "PATH_TO_YOUR_DIRECTORY"
     process_pdfs_in_directory(directory_path)
