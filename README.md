@@ -1,4 +1,4 @@
-# Q&A AI Assistant
+# Question & Answering chatbot for specific documents
 
 ## Overview
 
