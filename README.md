@@ -20,26 +20,22 @@ This project utilizes advanced NLP and AI techniques to provide accurate answers
 
 Before running the project, ensure you have the following:
 
-- Milvus server set up and running.
-- Required API keys (if applicable).
+- An IBM API key for using IBM models.
+- A Milvus server set up and running.
 - File paths for any local files you need to reference.
 
 ## Setup
 
-### Replace API Keys and URLs:
+- Replace API Keys and URLs: Open `.env` and update the placeholders
+- Update File Paths: Replace all placeholder file paths in the scripts with your actual file paths.
+- Install Dependencies: Install the necessary Python packages using pip. You may need packages like `Flask`, `pymilvus`, `transformers`, and others.
 
-1. Open `.env` and update the following placeholders:
-   - `API_KEY=YOUR_API_KEY`
-   - `SERVER_ADDRESS=YOUR_SERVER_ADDRESS`
-   - Add any other required configurations.
+## Usage
 
-### Update File Paths:
-
-1. Replace all placeholder file paths in the scripts with your actual file paths.
-
-### Install Dependencies:
-
-Run the following command to install the necessary packages:
-
-```bash
-pip install -r requirements.txt
+### Run the Flask Application:
+- To start the application, run:
+      ```bash
+      python QnA.py
+      ```
+### Access the Application:
+- Open a web browser and navigate to http://127.0.0.1:5000 to use the application locally or open the `index.html` on any browser after you run the flask app
